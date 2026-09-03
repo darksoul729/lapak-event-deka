@@ -31,7 +31,7 @@
     @else
         <div class="space-y-6">
             <!-- Multi-UMKM Tabs Header with Add Button -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-gray-900 p-2 rounded-xl border border-gray-200 dark:border-gray-800">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-gray-900 p-2 rounded-xl border border-gray-200 dark:border-gray-800 shadow-xs">
                 <x-filament::tabs label="Profil Usaha Anda">
                     @foreach($umkms as $u)
                         <x-filament::tabs.item
@@ -67,19 +67,34 @@
                     $applications = \App\Models\Application::where('umkm_id', $activeUmkm->id)->with('event', 'booth', 'payment')->get();
                 @endphp
 
-                <!-- Main Profile Section -->
-                <x-filament::section icon="heroicon-o-building-storefront">
+                <!-- Main Profile Section with Prominent Logo Header -->
+                <x-filament::section>
                     <x-slot name="heading">
-                        <div class="flex flex-wrap items-center gap-3">
-                            <span class="text-xl font-bold text-gray-900 dark:text-white">{{ $activeUmkm->nama_usaha }}</span>
-                            <x-filament::badge color="info" size="sm">
-                                {{ strtoupper($activeUmkm->kategori_usaha) }}
-                            </x-filament::badge>
-                        </div>
-                    </x-slot>
+                        <div class="flex items-center gap-4 py-1">
+                            <!-- Logo Avatar Box -->
+                            <div class="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800 overflow-hidden shadow-sm">
+                                @if($logoUrl)
+                                    <img src="{{ $logoUrl }}" alt="{{ $activeUmkm->nama_usaha }}" class="h-full w-full object-contain p-1">
+                                @else
+                                    <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-600 to-purple-600 text-lg font-black text-white">
+                                        {{ strtoupper(substr($activeUmkm->nama_usaha, 0, 2)) }}
+                                    </div>
+                                @endif
+                            </div>
 
-                    <x-slot name="description">
-                        Penanggung Jawab / Pemilik: <strong class="text-gray-800 dark:text-gray-200">{{ $activeUmkm->nama_pemilik }}</strong>
+                            <!-- Name, Category Badge & Owner -->
+                            <div>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="text-xl font-bold text-gray-900 dark:text-white">{{ $activeUmkm->nama_usaha }}</span>
+                                    <x-filament::badge color="info" size="sm">
+                                        {{ strtoupper($activeUmkm->kategori_usaha) }}
+                                    </x-filament::badge>
+                                </div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                    Penanggung Jawab / Pemilik: <strong class="text-gray-800 dark:text-gray-200">{{ $activeUmkm->nama_pemilik }}</strong>
+                                </p>
+                            </div>
+                        </div>
                     </x-slot>
 
                     <x-slot name="headerEnd">
@@ -98,11 +113,11 @@
                     </x-slot>
 
                     <!-- Profile Info Grid -->
-                    <div class="space-y-6">
+                    <div class="space-y-6 pt-2">
                         <!-- Contact Info Grid -->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <!-- WhatsApp -->
-                            <div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/40 p-4 flex items-center gap-3">
+                            <div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50/60 dark:bg-gray-800/40 p-4 flex items-center gap-3">
                                 <div class="p-2.5 rounded-lg bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 shrink-0">
                                     <x-heroicon-m-phone class="h-5 w-5" />
                                 </div>
@@ -115,7 +130,7 @@
                             </div>
 
                             <!-- Instagram -->
-                            <div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/40 p-4 flex items-center gap-3">
+                            <div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50/60 dark:bg-gray-800/40 p-4 flex items-center gap-3">
                                 <div class="p-2.5 rounded-lg bg-pink-100 text-pink-700 dark:bg-pink-950 dark:text-pink-300 shrink-0">
                                     <x-heroicon-m-camera class="h-5 w-5" />
                                 </div>
@@ -128,7 +143,7 @@
                             </div>
 
                             <!-- Alamat -->
-                            <div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/40 p-4 flex items-center gap-3">
+                            <div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50/60 dark:bg-gray-800/40 p-4 flex items-center gap-3">
                                 <div class="p-2.5 rounded-lg bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 shrink-0">
                                     <x-heroicon-m-map-pin class="h-5 w-5" />
                                 </div>
@@ -183,7 +198,7 @@
                     @else
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             @foreach($applications as $app)
-                                <div class="rounded-xl border border-gray-200 dark:border-gray-800 p-4 bg-white dark:bg-gray-900 flex flex-col justify-between gap-4">
+                                <div class="rounded-xl border border-gray-200 dark:border-gray-800 p-4 bg-white dark:bg-gray-900 flex flex-col justify-between gap-4 shadow-xs">
                                     <div class="space-y-2">
                                         <div class="flex items-center justify-between gap-2">
                                             <x-filament::badge
