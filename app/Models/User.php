@@ -5,6 +5,7 @@ namespace App\Models;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -46,6 +47,11 @@ class User extends Authenticatable implements FilamentUser
     public function isTenant(): bool
     {
         return $this->role === 'tenant';
+    }
+
+    public function umkms(): HasMany
+    {
+        return $this->hasMany(Umkm::class);
     }
 
     public function umkm(): HasOne
