@@ -145,33 +145,4 @@ class LapakEventBusinessRulesTest extends TestCase
 
         $response->assertOk();
     }
-
-    public function test_tenant_can_have_multiple_umkm_profiles(): void
-    {
-        $tenant = User::factory()->create(['role' => 'tenant']);
-
-        $umkm1 = Umkm::create([
-            'user_id' => $tenant->id,
-            'nama_usaha' => 'Usaha Pertama',
-            'nama_pemilik' => 'Pemilik 1',
-            'nomor_whatsapp' => '0811111111',
-            'alamat' => 'Alamat 1',
-            'kategori_usaha' => 'Kuliner',
-            'deskripsi_produk' => 'Produk 1',
-        ]);
-
-        $umkm2 = Umkm::create([
-            'user_id' => $tenant->id,
-            'nama_usaha' => 'Usaha Kedua',
-            'nama_pemilik' => 'Pemilik 1',
-            'nomor_whatsapp' => '0822222222',
-            'alamat' => 'Alamat 2',
-            'kategori_usaha' => 'Fashion',
-            'deskripsi_produk' => 'Produk 2',
-        ]);
-
-        $this->assertCount(2, $tenant->umkms);
-        $this->assertEquals('Usaha Pertama', $tenant->umkms[0]->nama_usaha);
-        $this->assertEquals('Usaha Kedua', $tenant->umkms[1]->nama_usaha);
-    }
 }

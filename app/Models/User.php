@@ -48,11 +48,6 @@ class User extends Authenticatable implements FilamentUser
         return $this->role === 'tenant';
     }
 
-    public function umkms(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Umkm::class);
-    }
-
     public function umkm(): HasOne
     {
         return $this->hasOne(Umkm::class);

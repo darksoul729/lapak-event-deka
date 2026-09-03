@@ -18,18 +18,18 @@ class CreateApplication extends CreateRecord
         $user = Auth::user();
 
         if ($user?->isTenant()) {
-            if (empty($data['umkm_id'])) {
-                $umkm = Umkm::where('user_id', $user->id)->first();
-                if (!$umkm) {
-                    Notification::make()
-                        ->title('Profil UMKM Belum Ada')
-                        ->body('Silakan buat sekurang-kurangnya satu Profil UMKM terlebih dahulu.')
-                        ->danger()
-                        ->send();
-                    $this->halt();
-                }
-                $data['umkm_id'] = $umkm->id;
+            $umkm = Umkm::where('user_id', $user->id)->first();
+
+            if (!$umkm) {
+                Notification::make()
+                    ->title('Profil UMKM Belum Ada')
+                    ->body('Silakan buat Profil UMKM terlebih dahulu.')
+                    ->danger()
+                    ->send();
+                $this->halt();
             }
+
+            $data['umkm_id'] = $umkm->id;
         }
 
         // Check duplicate application
