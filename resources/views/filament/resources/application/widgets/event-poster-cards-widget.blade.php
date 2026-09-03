@@ -93,13 +93,19 @@
 
                         <!-- Action Button -->
                         <div class="pt-1">
-                            <a 
-                                href="{{ App\Filament\Resources\ApplicationResource::getUrl('create') . '?event_id=' . $event->id }}" 
-                                class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 shadow-md hover:shadow-lg transition-all duration-200 transform group-hover:scale-[1.01]"
-                            >
-                                <x-heroicon-m-paper-airplane class="w-4 h-4" />
-                                Daftar Event Ini
-                            </a>
+                            @if(auth()->user()?->isTenant())
+                                <a 
+                                    href="{{ App\Filament\Resources\ApplicationResource::getUrl('create') . '?event_id=' . $event->id }}" 
+                                    class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 shadow-md hover:shadow-lg transition-all duration-200 transform group-hover:scale-[1.01]"
+                                >
+                                    <x-heroicon-m-paper-airplane class="w-4 h-4" />
+                                    Daftar Event Ini
+                                </a>
+                            @else
+                                <div class="py-2.5 px-4 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800/80 rounded-xl border border-gray-200 dark:border-gray-700">
+                                    Khusus Pendaftaran Tenant
+                                </div>
+                            @endif
                         </div>
 
                     </div>

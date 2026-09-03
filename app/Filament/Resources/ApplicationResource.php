@@ -29,6 +29,11 @@ class ApplicationResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Pendaftaran Event';
 
+    public static function canCreate(): bool
+    {
+        return Auth::user()?->isTenant() ?? false;
+    }
+
     public static function canEdit($record): bool
     {
         return Auth::user()?->isAdmin() ?? false;

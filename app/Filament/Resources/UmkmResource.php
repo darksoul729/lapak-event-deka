@@ -24,6 +24,16 @@ class UmkmResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Profil UMKM';
 
+    public static function canCreate(): bool
+    {
+        $user = Auth::user();
+        if ($user?->isAdmin()) {
+            return false;
+        }
+
+        return $user?->isTenant() && !$user->umkm()->exists();
+    }
+
     public static function canDelete($record): bool
     {
         return Auth::user()?->isAdmin() ?? false;

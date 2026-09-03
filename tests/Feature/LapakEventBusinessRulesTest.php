@@ -138,12 +138,21 @@ class LapakEventBusinessRulesTest extends TestCase
         $this->assertEquals('terisi', $booth->status);
     }
 
-    public function test_application_resource_create_page_renders_without_type_error(): void
+    public function test_tenant_can_access_application_create_page(): void
     {
-        $admin = User::factory()->create(['role' => 'admin']);
-        $response = $this->actingAs($admin)->get(\App\Filament\Resources\ApplicationResource::getUrl('create'));
+        $tenant = User::factory()->create(['role' => 'tenant']);
+        $response = $this->actingAs($tenant)->get(\App\Filament\Resources\ApplicationResource::getUrl('create'));
 
         $response->assertOk();
+    }
+
+    public function test_admin_cannot_create_application_or_umkm_profile(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($admin);
+
+        $this->assertFalse(\App\Filament\Resources\ApplicationResource::canCreate());
+        $this->assertFalse(\App\Filament\Resources\UmkmResource::canCreate());
     }
 
     public function test_tenant_cannot_see_event_and_booth_resources_in_navigation(): void
