@@ -1,9 +1,18 @@
+@php
+    $logoUrl = null;
+    if ($getRecord()->logo_path) {
+        $logoUrl = str_starts_with($getRecord()->logo_path, 'http')
+            ? $getRecord()->logo_path
+            : Storage::url($getRecord()->logo_path);
+    }
+@endphp
+
 <div class="relative flex flex-col justify-between overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
     <!-- Header Avatar & Category -->
     <div class="flex items-start justify-between border-b border-gray-100 pb-4 dark:border-gray-800">
         <div class="flex items-center space-x-3.5">
-            @if($getRecord()->logo_path)
-                <img src="{{ Storage::url($getRecord()->logo_path) }}" alt="{{ $getRecord()->nama_usaha }}" class="h-14 w-14 rounded-full border-2 border-indigo-500/20 object-cover shadow-sm">
+            @if($logoUrl)
+                <img src="{{ $logoUrl }}" alt="{{ $getRecord()->nama_usaha }}" class="h-14 w-14 rounded-full border-2 border-indigo-500/20 object-cover shadow-sm">
             @else
                 <div class="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-600 to-violet-600 font-bold text-white shadow-md text-lg">
                     {{ strtoupper(substr($getRecord()->nama_usaha, 0, 2)) }}
