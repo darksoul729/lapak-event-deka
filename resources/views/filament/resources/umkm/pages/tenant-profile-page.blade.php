@@ -229,20 +229,42 @@
                                         </div>
                                     </div>
 
-                                    <div class="pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between text-xs">
+                                    <div class="pt-3 border-t border-gray-100 dark:border-gray-800 flex flex-wrap items-center justify-between gap-2 text-xs">
                                         <div class="flex items-center gap-1.5 font-bold text-gray-800 dark:text-gray-200">
                                             <x-heroicon-m-ticket class="h-4 w-4 text-amber-500 shrink-0" />
-                                            {{ $app->booth ? 'Booth ' . $app->booth->kode_booth . ' (' . $app->booth->zona . ')' : 'Belum Ada Booth' }}
+                                            @if($app->booth)
+                                                <span class="text-emerald-600 dark:text-emerald-400 font-extrabold bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">
+                                                    Booth {{ $app->booth->kode_booth }} ({{ $app->booth->zona }})
+                                                </span>
+                                            @else
+                                                <span class="text-gray-500 font-normal">
+                                                    {{ $app->status_kurasi === 'diterima' ? 'Menunggu Penentuan Booth' : 'Belum Ada Booth' }}
+                                                </span>
+                                            @endif
                                         </div>
 
-                                        @if($app->payment)
-                                            <x-filament::badge
-                                                :color="$app->payment->status === 'lunas' ? 'success' : ($app->payment->status === 'menunggu_verifikasi' ? 'info' : 'danger')"
-                                                size="sm"
-                                            >
-                                                {{ str_replace('_', ' ', strtoupper($app->payment->status)) }}
-                                            </x-filament::badge>
-                                        @endif
+                                        <div class="flex items-center gap-2">
+                                            @if($app->payment)
+                                                <x-filament::badge
+                                                    :color="$app->payment->status === 'lunas' ? 'success' : ($app->payment->status === 'menunggu_verifikasi' ? 'info' : 'danger')"
+                                                    size="sm"
+                                                >
+                                                    {{ str_replace('_', ' ', strtoupper($app->payment->status)) }}
+                                                </x-filament::badge>
+
+                                                @if(in_array($app->payment->status, ['belum_bayar', 'ditolak']))
+                                                    <x-filament::button
+                                                        tag="a"
+                                                        :href="App\Filament\Resources\PaymentResource::getUrl('index')"
+                                                        size="xs"
+                                                        color="warning"
+                                                        icon="heroicon-m-arrow-up-tray"
+                                                    >
+                                                        Bayar Sekarang
+                                                    </x-filament::button>
+                                                @endif
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             @endforeach
