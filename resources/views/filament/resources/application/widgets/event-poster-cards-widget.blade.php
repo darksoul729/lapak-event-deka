@@ -19,57 +19,56 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
             @foreach($this->getEvents() as $index => $event)
                 @php
-                    $themes = [
-                        0 => [
-                            'bg' => 'from-amber-600 via-orange-600 to-red-700',
-                            'badge' => 'Kuliner & Food Fest',
-                            'badge_color' => 'bg-amber-400 text-gray-950',
-                            'icon' => 'heroicon-m-fire',
-                            'accent' => 'text-amber-400',
-                        ],
-                        1 => [
-                            'bg' => 'from-indigo-600 via-purple-600 to-pink-700',
-                            'badge' => 'Fashion & Kriya Expo',
-                            'badge_color' => 'bg-purple-300 text-gray-950',
-                            'icon' => 'heroicon-m-sparkles',
-                            'accent' => 'text-purple-300',
-                        ],
-                        2 => [
-                            'bg' => 'from-emerald-600 via-teal-600 to-cyan-700',
-                            'badge' => 'Youth Art & Creative',
-                            'badge_color' => 'bg-teal-300 text-gray-950',
-                            'icon' => 'heroicon-m-bolt',
-                            'accent' => 'text-teal-300',
-                        ],
+                    $defaultPosters = [
+                        0 => 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80',
+                        1 => 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80',
+                        2 => 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80',
                     ];
-                    $theme = $themes[$index % 3];
+
+                    $posterUrl = $event->poster_path 
+                        ? \Illuminate\Support\Facades\Storage::url($event->poster_path) 
+                        : ($defaultPosters[$index % 3]);
+
+                    $badges = [
+                        0 => ['label' => 'Kuliner & Food Fest', 'bg' => 'bg-amber-500 text-black', 'icon' => 'heroicon-m-fire'],
+                        1 => ['label' => 'Fashion & Kriya Expo', 'bg' => 'bg-purple-500 text-white', 'icon' => 'heroicon-m-sparkles'],
+                        2 => ['label' => 'Youth Art & Creative', 'bg' => 'bg-teal-500 text-black', 'icon' => 'heroicon-m-bolt'],
+                    ];
+                    $badge = $badges[$index % 3];
                 @endphp
 
-                <div class="group relative bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between">
-                    <!-- Poster Header Graphics -->
-                    <div class="relative h-44 bg-gradient-to-br {{ $theme['bg'] }} p-5 text-white flex flex-col justify-between overflow-hidden">
-                        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/20 via-transparent to-black/30 pointer-events-none"></div>
-                        <div class="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-white/10 blur-xl group-hover:scale-125 transition-transform duration-500"></div>
+                <div class="group relative bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col justify-between">
+                    <!-- Poster Image Header Banner -->
+                    <div class="relative h-48 w-full overflow-hidden bg-gray-950 flex flex-col justify-between p-4">
+                        <!-- Poster Image Background -->
+                        <img 
+                            src="{{ $posterUrl }}" 
+                            alt="{{ $event->nama_event }}" 
+                            class="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500 brightness-90"
+                        >
 
-                        <!-- Top Badge Row -->
+                        <!-- Gradient Dark Overlay for High Contrast Text -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/50 to-black/30"></div>
+
+                        <!-- Top Badges -->
                         <div class="relative z-10 flex items-center justify-between">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-black uppercase tracking-wider shadow-sm {{ $theme['badge_color'] }}">
-                                <x-dynamic-component :component="$theme['icon']" class="w-3.5 h-3.5" />
-                                {{ $theme['badge'] }}
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider shadow-md {{ $badge['bg'] }}">
+                                <x-dynamic-component :component="$badge['icon']" class="w-3.5 h-3.5" />
+                                {{ $badge['label'] }}
                             </span>
 
-                            <span class="px-2.5 py-0.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-[10px] font-bold text-white">
-                                Sisa Kuota: {{ $event->kuota_tenant }} Booth
+                            <span class="px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[10px] font-bold text-white shadow-sm">
+                                Kuota: {{ $event->kuota_tenant }} Booth
                             </span>
                         </div>
 
-                        <!-- Event Title in Poster -->
-                        <div class="relative z-10 mt-auto">
-                            <h3 class="text-lg font-black leading-snug drop-shadow-md line-clamp-2 text-white">
+                        <!-- Poster Title & Location overlay -->
+                        <div class="relative z-10 mt-auto pt-4">
+                            <h3 class="text-base font-black text-white leading-snug drop-shadow-md line-clamp-2">
                                 {{ $event->nama_event }}
                             </h3>
-                            <p class="text-xs text-white/90 font-medium flex items-center gap-1 mt-1">
-                                <x-heroicon-m-map-pin class="w-3.5 h-3.5 shrink-0 opacity-80" />
+                            <p class="text-xs text-amber-300 font-semibold flex items-center gap-1 mt-1 drop-shadow">
+                                <x-heroicon-m-map-pin class="w-3.5 h-3.5 shrink-0 text-amber-400" />
                                 {{ $event->lokasi }}
                             </p>
                         </div>
