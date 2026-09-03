@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ApplicationResource\Pages;
 
 use App\Filament\Resources\ApplicationResource;
+use App\Filament\Resources\ApplicationResource\Widgets\EventPosterCardsWidget;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
@@ -11,6 +12,13 @@ use Illuminate\Support\Facades\Auth;
 class ListApplications extends ListRecords
 {
     protected static string $resource = ApplicationResource::class;
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            EventPosterCardsWidget::class,
+        ];
+    }
 
     protected function getHeaderActions(): array
     {

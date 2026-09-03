@@ -60,6 +60,7 @@ class ApplicationResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('event_id')
                             ->label('Pilih Event Bazar')
+                            ->default(fn () => request()->query('event_id'))
                             ->relationship(
                                 name: 'event',
                                 titleAttribute: 'nama_event',
