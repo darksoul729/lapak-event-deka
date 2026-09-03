@@ -21,7 +21,30 @@ class BoothResource extends Resource
 
     protected static ?string $modelLabel = 'Data Booth';
 
-    protected static ?string $pluralModelLabel = 'Data Booth';
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Auth::user()?->isAdmin() ?? false;
+    }
+
+    public static function canViewAny(): bool
+    {
+        return Auth::user()?->isAdmin() ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()?->isAdmin() ?? false;
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()?->isAdmin() ?? false;
+    }
+
+    public static function canDelete($record): bool
+    {
+        return Auth::user()?->isAdmin() ?? false;
+    }
 
     public static function form(Form $form): Form
     {

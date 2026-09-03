@@ -24,6 +24,11 @@ class UmkmResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Profil UMKM';
 
+    public static function canDelete($record): bool
+    {
+        return Auth::user()?->isAdmin() ?? false;
+    }
+
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();

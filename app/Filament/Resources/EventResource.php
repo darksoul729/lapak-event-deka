@@ -23,7 +23,27 @@ class EventResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Event Bazar';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Auth::user()?->isAdmin() ?? false;
+    }
+
+    public static function canViewAny(): bool
+    {
+        return Auth::user()?->isAdmin() ?? false;
+    }
+
     public static function canCreate(): bool
+    {
+        return Auth::user()?->isAdmin() ?? false;
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()?->isAdmin() ?? false;
+    }
+
+    public static function canDelete($record): bool
     {
         return Auth::user()?->isAdmin() ?? false;
     }

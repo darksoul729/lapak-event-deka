@@ -145,4 +145,32 @@ class LapakEventBusinessRulesTest extends TestCase
 
         $response->assertOk();
     }
+
+    public function test_tenant_cannot_see_event_and_booth_resources_in_navigation(): void
+    {
+        $tenant = User::factory()->create(['role' => 'tenant']);
+
+        $this->actingAs($tenant);
+
+        $this->assertFalse(\App\Filament\Resources\EventResource::shouldRegisterNavigation());
+        $this->assertFalse(\App\Filament\Resources\EventResource::canViewAny());
+        $this->assertFalse(\App\Filament\Resources\EventResource::canCreate());
+
+        $this->assertFalse(\App\Filament\Resources\BoothResource::shouldRegisterNavigation());
+        $this->assertFalse(\App\Filament\Resources\BoothResource::canViewAny());
+        $this->assertFalse(\App\Filament\Resources\BoothResource::canCreate());
+    }
+
+    public function test_admin_can_see_event_and_booth_resources_in_navigation(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($admin);
+
+        $this->assertTrue(\App\Filament\Resources\EventResource::shouldRegisterNavigation());
+        $this->assertTrue(\App\Filament\Resources\EventResource::canViewAny());
+
+        $this->assertTrue(\App\Filament\Resources\BoothResource::shouldRegisterNavigation());
+        $this->assertTrue(\App\Filament\Resources\BoothResource::canViewAny());
+    }
 }
