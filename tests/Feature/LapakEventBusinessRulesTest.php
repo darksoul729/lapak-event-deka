@@ -141,7 +141,7 @@ class LapakEventBusinessRulesTest extends TestCase
     public function test_tenant_can_access_application_create_page(): void
     {
         $tenant = User::factory()->create(['role' => 'tenant']);
-        $response = $this->actingAs($tenant)->get(\App\Filament\Resources\ApplicationResource::getUrl('create'));
+        $response = $this->actingAs($tenant)->get(\App\Filament\Resources\ApplicationResource::getUrl('create', panel: 'tenant'));
 
         $response->assertOk();
     }
@@ -171,16 +171,18 @@ class LapakEventBusinessRulesTest extends TestCase
         $this->assertFalse(\App\Filament\Resources\BoothResource::canCreate());
     }
 
-    public function test_admin_can_see_event_and_booth_resources_in_navigation(): void
+    public function test_admin_and_tenant_panel_access_isolation(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
+        $tenant = User::factory()->create(['role' => 'tenant']);
 
-        $this->actingAs($admin);
+        $adminPanel = \Filament\Facades\Filament::getPanel('admin');
+        $tenantPanel = \Filament\Facades\Filament::getPanel('tenant');
 
-        $this->assertTrue(\App\Filament\Resources\EventResource::shouldRegisterNavigation());
-        $this->assertTrue(\App\Filament\Resources\EventResource::canViewAny());
+        $this->assertTrue($admin->canAccessPanel($adminPanel));
+        $this->assertFalse($admin->canAccessPanel($tenantPanel));
 
-        $this->assertTrue(\App\Filament\Resources\BoothResource::shouldRegisterNavigation());
-        $this->assertTrue(\App\Filament\Resources\BoothResource::canViewAny());
+        $this->assertTrue($tenant->canAccessPanel($tenantPanel));
+        $this->assertFalse($tenant->canAccessPanel($adminPanel));
     }
 }
