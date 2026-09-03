@@ -39,96 +39,85 @@ class UmkmResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Informasi Usaha')
-                    ->description('Lengkapi data profil usaha UMKM Anda.')
+                Forms\Components\Grid::make(3)
                     ->schema([
-                        Forms\Components\Hidden::make('user_id')
-                            ->default(fn () => Auth::id()),
-                        Forms\Components\TextInput::make('nama_usaha')
-                            ->label('Nama Usaha')
-                            ->placeholder('Contoh: Kopi Kenangan Samarinda')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('nama_pemilik')
-                            ->label('Nama Pemilik')
-                            ->placeholder('Contoh: Budi Santoso')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('nomor_whatsapp')
-                            ->label('Nomor WhatsApp')
-                            ->placeholder('Contoh: 081234567890')
-                            ->tel()
-                            ->required()
-                            ->maxLength(20),
-                        Forms\Components\Select::make('kategori_usaha')
-                            ->label('Kategori Usaha')
-                            ->options([
-                                'Kuliner' => 'Kuliner (Makanan & Minuman)',
-                                'Fashion' => 'Fashion & Pakaian',
-                                'Kriya' => 'Kriya & Kerajinan Tangan',
-                                'Jasa' => 'Jasa & Pelayanan',
-                                'Elektronik' => 'Elektronik & Gadget',
-                                'Lainnya' => 'Lainnya',
-                            ])
-                            ->required(),
-                        Forms\Components\TextInput::make('instagram')
-                            ->label('Instagram Usaha')
-                            ->placeholder('Contoh: @umkm_samarinda')
-                            ->maxLength(255),
-                        Forms\Components\FileUpload::make('logo_path')
-                            ->label('Logo / Foto Produk')
-                            ->image()
-                            ->directory('umkm-logos')
-                            ->columnSpanFull(),
-                        Forms\Components\Textarea::make('alamat')
-                            ->label('Alamat Usaha')
-                            ->required()
-                            ->rows(3)
-                            ->columnSpanFull(),
-                        Forms\Components\Textarea::make('deskripsi_produk')
-                            ->label('Deskripsi Produk / Layanan')
-                            ->required()
-                            ->rows(3)
-                            ->columnSpanFull(),
-                    ])->columns(2),
+                        Forms\Components\Section::make('Logo & Identitas Visual')
+                            ->description('Upload logo brand atau foto produk utama UMKM Anda.')
+                            ->icon('heroicon-o-photo')
+                            ->schema([
+                                Forms\Components\FileUpload::make('logo_path')
+                                    ->label('Logo / Foto Branding')
+                                    ->image()
+                                    ->avatar()
+                                    ->alignCenter()
+                                    ->directory('umkm-logos')
+                                    ->columnSpanFull(),
+                            ])->columnSpan(1),
+
+                        Forms\Components\Section::make('Informasi Profil Usaha')
+                            ->description('Data profil publik usaha Anda yang akan dikurasi oleh panitia bazar.')
+                            ->icon('heroicon-o-building-storefront')
+                            ->schema([
+                                Forms\Components\Hidden::make('user_id')
+                                    ->default(fn () => Auth::id()),
+                                Forms\Components\TextInput::make('nama_usaha')
+                                    ->label('Nama Usaha / Brand')
+                                    ->placeholder('Contoh: Es Teh Solo Samarinda')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\Select::make('kategori_usaha')
+                                    ->label('Kategori Usaha')
+                                    ->options([
+                                        'Kuliner' => 'Kuliner (Makanan & Minuman)',
+                                        'Fashion' => 'Fashion & Pakaian',
+                                        'Kriya' => 'Kriya & Kerajinan Tangan',
+                                        'Jasa' => 'Jasa & Pelayanan',
+                                        'Elektronik' => 'Elektronik & Gadget',
+                                        'Lainnya' => 'Lainnya',
+                                    ])
+                                    ->required(),
+                                Forms\Components\TextInput::make('nama_pemilik')
+                                    ->label('Nama Pemilik / Penanggung Jawab')
+                                    ->placeholder('Contoh: Budi Santoso')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('nomor_whatsapp')
+                                    ->label('Nomor WhatsApp Active')
+                                    ->placeholder('Contoh: 081234567890')
+                                    ->tel()
+                                    ->required()
+                                    ->maxLength(20),
+                                Forms\Components\TextInput::make('instagram')
+                                    ->label('Instagram Usaha')
+                                    ->placeholder('Contoh: @estehsolo_smr')
+                                    ->maxLength(255),
+                                Forms\Components\Textarea::make('alamat')
+                                    ->label('Alamat Lengkap Usaha')
+                                    ->placeholder('Contoh: Jl. M. Yamin No. 45, Samarinda')
+                                    ->required()
+                                    ->rows(2)
+                                    ->columnSpanFull(),
+                                Forms\Components\Textarea::make('deskripsi_produk')
+                                    ->label('Deskripsi Ringkas Produk / Layanan')
+                                    ->placeholder('Menjual berbagai racikan teh manis khas Solo yang segar dan cemilan tradisional.')
+                                    ->required()
+                                    ->rows(3)
+                                    ->columnSpanFull(),
+                            ])->columns(2)->columnSpan(2),
+                    ]),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->contentGrid([
+                'default' => 1,
+                'md' => 2,
+                'xl' => 3,
+            ])
             ->columns([
-                Tables\Columns\ImageColumn::make('logo_path')
-                    ->label('Logo')
-                    ->circular(),
-                Tables\Columns\TextColumn::make('nama_usaha')
-                    ->label('Nama Usaha')
-                    ->searchable()
-                    ->sortable()
-                    ->weight('bold'),
-                Tables\Columns\TextColumn::make('nama_pemilik')
-                    ->label('Pemilik')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('kategori_usaha')
-                    ->label('Kategori')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'Kuliner' => 'warning',
-                        'Fashion' => 'success',
-                        'Kriya' => 'info',
-                        default => 'gray',
-                    }),
-                Tables\Columns\TextColumn::make('nomor_whatsapp')
-                    ->label('WhatsApp')
-                    ->icon('heroicon-m-phone'),
-                Tables\Columns\TextColumn::make('instagram')
-                    ->label('Instagram')
-                    ->icon('heroicon-m-camera'),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Terdaftar')
-                    ->dateTime('d M Y')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\Layout\View::make('filament.resources.umkm.card'),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('kategori_usaha')
@@ -142,7 +131,22 @@ class UmkmResource extends Resource
                     ]),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label('Edit')
+                    ->button()
+                    ->color('primary')
+                    ->icon('heroicon-m-pencil-square'),
+                Tables\Actions\Action::make('daftar_event')
+                    ->label('Daftar Event')
+                    ->icon('heroicon-m-paper-airplane')
+                    ->color('success')
+                    ->button()
+                    ->url(fn () => ApplicationResource::getUrl('create')),
+                Tables\Actions\DeleteAction::make()
+                    ->label('Hapus')
+                    ->button()
+                    ->color('danger')
+                    ->icon('heroicon-m-trash'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
