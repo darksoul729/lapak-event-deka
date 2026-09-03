@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\UmkmResource\Pages;
 
 use App\Filament\Resources\UmkmResource;
+use App\Models\Umkm;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Auth;
@@ -11,18 +12,12 @@ class ListUmkms extends ListRecords
 {
     protected static string $resource = UmkmResource::class;
 
-    protected function getHeaderActions(): array
-    {
-        // If tenant already has UMKM, hide create button to maintain 1 user = 1 UMKM
-        if (Auth::user()?->isTenant() && Auth::user()?->umkm()->exists()) {
-            return [];
-        }
+    public ?int $activeUmkmId = null;
 
-        return [
-            Actions\CreateAction::make()->label('Buat Profil UMKM'),
-        ];
-    }
-}
+    public function mount(): void
+    {
+        parent::mount();
+
         $firstUmkm = Auth::user()?->umkms()->first();
         if ($firstUmkm) {
             $this->activeUmkmId = (int) request()->query('umkm', $firstUmkm->id);
