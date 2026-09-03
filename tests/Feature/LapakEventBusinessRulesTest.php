@@ -146,13 +146,14 @@ class LapakEventBusinessRulesTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_admin_cannot_create_application_or_umkm_profile(): void
+    public function test_admin_cannot_create_application_or_umkm_profile_or_manual_payment(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
         $this->actingAs($admin);
 
         $this->assertFalse(\App\Filament\Resources\ApplicationResource::canCreate());
         $this->assertFalse(\App\Filament\Resources\UmkmResource::canCreate());
+        $this->assertFalse(\App\Filament\Resources\PaymentResource::canCreate());
     }
 
     public function test_tenant_cannot_see_event_and_booth_resources_in_navigation(): void

@@ -28,7 +28,7 @@ class PaymentResource extends Resource
 
     public static function canCreate(): bool
     {
-        return Auth::user()?->isAdmin() ?? false;
+        return false;
     }
 
     public static function canEdit($record): bool
