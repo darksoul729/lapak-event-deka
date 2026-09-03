@@ -60,30 +60,30 @@ class PaymentResource extends Resource
         $invoiceNo = $record ? $record->nomor_tagihan : 'INV/TAGIHAN';
 
         return "
-        <div class='max-w-sm mx-auto my-2 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950 rounded-2xl border-2 border-gray-900 dark:border-gray-100 p-5 text-center shadow-xl'>
-            <div class='flex items-center justify-between border-b border-gray-200 dark:border-gray-800 pb-3 mb-3'>
-                <span class='text-xs font-black tracking-widest text-red-600 uppercase bg-red-50 dark:bg-red-950/60 px-2 py-0.5 rounded border border-red-200 dark:border-red-900'>QRIS NATIONAL STANDARD</span>
-                <span class='text-[10px] font-mono text-gray-500 dark:text-gray-400 font-semibold'>NMID: ID1026090388291</span>
+        <div class='max-w-xs mx-auto my-1 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950 rounded-2xl border-2 border-gray-900 dark:border-gray-100 p-4 text-center shadow-lg'>
+            <div class='flex items-center justify-between border-b border-gray-200 dark:border-gray-800 pb-2 mb-2'>
+                <span class='text-[10px] font-black tracking-widest text-red-600 uppercase bg-red-50 dark:bg-red-950/60 px-1.5 py-0.5 rounded border border-red-200 dark:border-red-900'>QRIS NATIONAL</span>
+                <span class='text-[9px] font-mono text-gray-500 dark:text-gray-400 font-semibold'>NMID: ID1026090388291</span>
             </div>
 
-            <h3 class='text-base font-extrabold text-gray-900 dark:text-white uppercase tracking-tight'>LAPAK EVENT SAMARINDA</h3>
-            <p class='text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5'>Bazar & Expo UMKM Kota Samarinda</p>
+            <h3 class='text-sm font-extrabold text-gray-900 dark:text-white uppercase tracking-tight'>LAPAK EVENT SAMARINDA</h3>
+            <p class='text-[10px] text-gray-500 dark:text-gray-400 font-medium mt-0.5'>Bazar & Expo UMKM Kota Samarinda</p>
 
-            <div class='my-4 p-3 bg-white rounded-xl border border-gray-300 dark:border-gray-700 inline-block shadow-inner'>
-                <img src='https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=00020101021226680016COM.LAPAKEVENT.WWW01189360091100000000000215ID10260903882910303UMI51440014ID.CO.QRIS.WWW5204581253033605802ID5922LAPAKEVENT SAMARINDA6009SAMARINDA61057511162070703A0163047A8F' 
+            <div class='my-3 p-2.5 bg-white rounded-xl border border-gray-300 dark:border-gray-700 inline-block shadow-inner'>
+                <img src='https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=00020101021226680016COM.LAPAKEVENT.WWW01189360091100000000000215ID10260903882910303UMI51440014ID.CO.QRIS.WWW5204581253033605802ID5922LAPAKEVENT SAMARINDA6009SAMARINDA61057511162070703A0163047A8F' 
                      alt='QRIS Pembayaran' 
-                     class='w-48 h-48 mx-auto object-contain'>
+                     class='w-40 h-40 mx-auto object-contain'>
             </div>
 
-            <div class='bg-emerald-50 dark:bg-emerald-950/60 rounded-xl p-3 border border-emerald-200 dark:border-emerald-800'>
-                <p class='text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider'>Nominal Tagihan ({$invoiceNo})</p>
-                <p class='text-2xl font-black text-emerald-700 dark:text-emerald-300 mt-0.5'>
+            <div class='bg-emerald-50 dark:bg-emerald-950/60 rounded-xl p-2.5 border border-emerald-200 dark:border-emerald-800'>
+                <p class='text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider'>Nominal Tagihan ({$invoiceNo})</p>
+                <p class='text-xl font-black text-emerald-700 dark:text-emerald-300 mt-0.5'>
                     Rp {$amount}
                 </p>
             </div>
 
-            <div class='mt-3 text-[11px] text-gray-500 dark:text-gray-400 leading-snug font-medium'>
-                Scan QRIS menggunakan <strong>GoPay, OVO, ShopeePay, DANA, BCA, Mandiri, BRI, BNI</strong> atau M-Banking lainnya.
+            <div class='mt-2.5 text-[10px] text-gray-500 dark:text-gray-400 leading-snug font-medium'>
+                Scan QRIS menggunakan <strong>GoPay, OVO, ShopeePay, DANA, BCA, Mandiri, BRI, BNI</strong> atau M-Banking.
             </div>
         </div>
         ";
@@ -93,51 +93,61 @@ class PaymentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('QRIS Stand Pembayaran')
-                    ->schema([
-                        Forms\Components\Placeholder::make('qris_display')
-                            ->hiddenLabel()
-                            ->content(fn ($record) => new \Illuminate\Support\HtmlString(static::getQrisCardHtml($record))),
-                    ]),
+                Forms\Components\Grid::make([
+                    'default' => 1,
+                    'lg' => 2,
+                ])
+                ->schema([
+                    Forms\Components\Section::make('Scan Stand QRIS Pembayaran')
+                        ->schema([
+                            Forms\Components\Placeholder::make('qris_display')
+                                ->hiddenLabel()
+                                ->content(fn ($record) => new \Illuminate\Support\HtmlString(static::getQrisCardHtml($record))),
+                        ])
+                        ->columnSpan(1),
 
-                Forms\Components\Section::make('Rincian Tagihan Booth')
-                    ->schema([
-                        Forms\Components\TextInput::make('nomor_tagihan')
-                            ->label('Nomor Tagihan')
-                            ->disabled(),
-                        Forms\Components\TextInput::make('jumlah_tagihan')
-                            ->label('Jumlah Tagihan (Rp)')
-                            ->prefix('Rp')
-                            ->disabled(),
-                        Forms\Components\Select::make('status')
-                            ->label('Status Pembayaran')
-                            ->options([
-                                'belum_bayar' => 'Belum Bayar',
-                                'menunggu_verifikasi' => 'Menunggu Verifikasi Admin',
-                                'lunas' => 'Lunas (Diverifikasi)',
-                                'ditolak' => 'Ditolak',
-                            ])
-                            ->required()
-                            ->disabled(fn () => !Auth::user()?->isAdmin()),
-                        Forms\Components\DateTimePicker::make('tanggal_dibayar')
-                            ->label('Waktu Upload / Pembayaran')
-                            ->disabled(fn () => !Auth::user()?->isAdmin()),
-                    ])->columns(2),
+                    Forms\Components\Group::make([
+                        Forms\Components\Section::make('Rincian Tagihan Booth')
+                            ->schema([
+                                Forms\Components\TextInput::make('nomor_tagihan')
+                                    ->label('Nomor Tagihan')
+                                    ->disabled(),
+                                Forms\Components\TextInput::make('jumlah_tagihan')
+                                    ->label('Jumlah Tagihan (Rp)')
+                                    ->prefix('Rp')
+                                    ->disabled(),
+                                Forms\Components\Select::make('status')
+                                    ->label('Status Pembayaran')
+                                    ->options([
+                                        'belum_bayar' => 'Belum Bayar',
+                                        'menunggu_verifikasi' => 'Menunggu Verifikasi Admin',
+                                        'lunas' => 'Lunas (Diverifikasi)',
+                                        'ditolak' => 'Ditolak',
+                                    ])
+                                    ->required()
+                                    ->disabled(fn () => !Auth::user()?->isAdmin()),
+                                Forms\Components\DateTimePicker::make('tanggal_dibayar')
+                                    ->label('Waktu Upload / Pembayaran')
+                                    ->disabled(fn () => !Auth::user()?->isAdmin()),
+                            ])->columns(2),
 
-                Forms\Components\Section::make('Upload Bukti Transfer / QRIS')
-                    ->schema([
-                        Forms\Components\FileUpload::make('bukti_pembayaran_path')
-                            ->label('File Bukti Transaksi')
-                            ->image()
-                            ->directory('payment-proofs')
-                            ->required()
-                            ->columnSpanFull(),
-                        Forms\Components\Textarea::make('alasan_penolakan')
-                            ->label('Alasan Penolakan (Jika Ada)')
-                            ->visible(fn ($record) => $record?->status === 'ditolak' || Auth::user()?->isAdmin())
-                            ->disabled(fn () => !Auth::user()?->isAdmin())
-                            ->columnSpanFull(),
-                    ]),
+                        Forms\Components\Section::make('Upload Bukti Transfer / QRIS')
+                            ->schema([
+                                Forms\Components\FileUpload::make('bukti_pembayaran_path')
+                                    ->label('File Bukti Transaksi')
+                                    ->image()
+                                    ->directory('payment-proofs')
+                                    ->required()
+                                    ->columnSpanFull(),
+                                Forms\Components\Textarea::make('alasan_penolakan')
+                                    ->label('Alasan Penolakan (Jika Ada)')
+                                    ->visible(fn ($record) => $record?->status === 'ditolak' || Auth::user()?->isAdmin())
+                                    ->disabled(fn () => !Auth::user()?->isAdmin())
+                                    ->columnSpanFull(),
+                            ]),
+                    ])
+                    ->columnSpan(1),
+                ]),
             ]);
     }
 
