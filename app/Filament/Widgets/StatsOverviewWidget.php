@@ -14,11 +14,11 @@ class StatsOverviewWidget extends BaseWidget
     protected function getStats(): array
     {
         if (Auth::user()?->isTenant()) {
-            $umkmId = Auth::user()?->umkm?->id;
+            $umkmIds = Auth::user()?->umkms()->pluck('id') ?? [];
 
-            $totalDaftar = Application::where('umkm_id', $umkmId)->count();
-            $diterima = Application::where('umkm_id', $umkmId)->where('status_kurasi', 'diterima')->count();
-            $tagihan = Payment::whereHas('application', fn ($q) => $q->where('umkm_id', $umkmId))->where('status', 'belum_bayar')->sum('jumlah_tagihan');
+            $totalDaftar = Application::whereIn('umkm_id', $umkmIds)->count();
+            $diterima = Application::whereIn('umkm_id', $umkmIds)->where('status_kurasi', 'diterima')->count();
+            $tagihan = Payment::whereHas('application', fn ($q) => $q->whereIn('umkm_id', $umkmIds))->where('status', 'belum_bayar')->sum('jumlah_tagihan');
 
             return [
                 Stat::make('Total Event Diikuti', $totalDaftar)

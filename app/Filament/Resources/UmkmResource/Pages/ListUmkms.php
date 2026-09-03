@@ -13,13 +13,8 @@ class ListUmkms extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        // If tenant already has UMKM, hide create button to maintain 1 user = 1 UMKM
-        if (Auth::user()?->isTenant() && Auth::user()?->umkm()->exists()) {
-            return [];
-        }
-
         return [
-            Actions\CreateAction::make()->label('Buat Profil UMKM'),
+            Actions\CreateAction::make()->label('Buat Profil UMKM Baru'),
         ];
     }
 }
